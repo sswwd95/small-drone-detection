@@ -1,8 +1,17 @@
 # Dataset
 data/
 
-# Training temporary outputs
-runs/
+# Pretrained weights
+pretrained/
+
+# Ignore all model outputs
+models/*
+
+# Keep final model folders only
+!models/baseline/
+!models/baseline/**
+!models/improved/
+!models/improved/**
 
 # Python
 __pycache__/
