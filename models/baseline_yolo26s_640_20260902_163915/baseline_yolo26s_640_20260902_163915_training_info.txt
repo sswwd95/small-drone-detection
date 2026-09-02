@@ -1,0 +1,18 @@
+Baseline 학습 결과
+============================================================
+실행 이름       : baseline_yolo26s_640_20260902_163915
+모델            : yolo26s.pt
+입력 크기       : 640
+Epoch           : 1
+Batch           : 12
+Seed            : 42
+Workers         : 4
+GPU             : NVIDIA GeForce GTX 1660 Ti with Max-Q Design
+
+학습 시작 시각  : 2026-09-02 16:39:15
+학습 종료 시각  : 2026-09-02 16:47:13
+학습 시간(초)   : 478.36
+학습 시간(분)   : 7.97
+
+학습 결과 경로  : /home/sswwd/projects/small-drone-detection/runs/detect/runs/train/baseline_yolo26s_640_20260902_163915
+최종 모델 경로  : models/baseline_yolo26s_640_20260902_163915/baseline_yolo26s_640_20260902_163915_best.pt
