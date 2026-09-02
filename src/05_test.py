@@ -7,7 +7,7 @@ from ultralytics import YOLO
 
 ROOT = Path(__file__).resolve().parents[1]
 
-RUN_NAME = "v1_subset_yolo26s_960_ep30_260903_0044"
+RUN_NAME = "v2_subset_yolo26s_960_ep100_260903_0234"
 
 MODEL_DIR = ROOT / "models" / RUN_NAME
 MODEL_PATH = MODEL_DIR / "weights" / "best.pt"
