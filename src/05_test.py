@@ -7,13 +7,14 @@ from ultralytics import YOLO
 
 ROOT = Path(__file__).resolve().parents[1]
 
-RUN_NAME = "baseline_subset_yolo26s_640_ep30_260902_2050"
+RUN_NAME = "v1_subset_yolo26s_960_ep30_260903_0044"
 
 MODEL_DIR = ROOT / "models" / RUN_NAME
 MODEL_PATH = MODEL_DIR / "weights" / "best.pt"
 DATA_YAML = ROOT / "data" / "yolo_subset" / "data.yaml"
 
-IMG_SIZE = 640
+# IMG_SIZE = 640
+IMG_SIZE = 960
 BATCH_SIZE = 16
 DEVICE = 0
 SEED = 42

@@ -21,9 +21,9 @@ DATA_DIR = ROOT / "data" / DATA_NAME
 DATA_YAML = DATA_DIR / "data.yaml"
 
 # baseline : 640
-# v1 : 1280
-IMG_SIZE = 1280
-EPOCHS = 30
+# v1 : 1280 ->  oom -> 960
+IMG_SIZE = 960
+EPOCHS = 100
 BATCH_SIZE = 16
 DEVICE = 0
 SEED = 42
