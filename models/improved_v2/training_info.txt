@@ -1,0 +1,21 @@
+학습 결과
+============================================================
+버전            : v1
+실행 이름       : v1_subset_yolo26s_960_ep100_260903_0234
+데이터          : subset
+사전학습 모델   : yolo26s.pt
+입력 크기       : 960
+Epoch           : 100
+Batch           : 16
+Seed            : 42
+Workers         : 4
+GPU             : NVIDIA GeForce RTX 3090
+PyTorch         : 2.13.0+cu126
+CUDA            : 12.6
+
+학습 시작 시각  : 2026-09-03 02:34:09
+학습 종료 시각  : 2026-09-03 07:32:19
+학습 시간(분)   : 298.17
+
+학습 결과 경로  : C:\Users\PMS\Desktop\MS\project\small-drone-detection\models\v1_subset_yolo26s_960_ep100_260903_0234
+최종 모델 경로  : C:\Users\PMS\Desktop\MS\project\small-drone-detection\models\v1_subset_yolo26s_960_ep100_260903_0234\weights\best.pt

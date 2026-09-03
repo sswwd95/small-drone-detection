@@ -1,0 +1,17 @@
+Tracking 성능 결과
+========================================
+영상             : video01
+전체 프레임       : 1050
+Input Size       : 960
+Confidence       : 0.25
+Match IoU        : 0.5
+
+TP               : 871
+FP               : 56
+FN               : 179
+Precision        : 0.9396
+Recall           : 0.8295
+F1               : 0.8811
+평균 TP IoU       : 0.8487
+평균 추론시간      : 13.37 ms
+추론 FPS          : 74.79

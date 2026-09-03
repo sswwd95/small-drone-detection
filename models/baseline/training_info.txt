@@ -1,0 +1,21 @@
+Baseline 학습 결과
+============================================================
+실행 이름       : baseline_subset_yolo26s_640_ep30_260902_2050
+데이터          : subset
+데이터 경로     : C:\Users\PMS\Desktop\MS\project\small-drone-detection\data\yolo_subset
+모델            : yolo26s.pt
+입력 크기       : 640
+Epoch           : 30
+Batch           : 16
+Seed            : 42
+Workers         : 4
+GPU             : NVIDIA GeForce RTX 3090
+PyTorch         : 2.13.0+cu126
+CUDA            : 12.6
+
+학습 시작 시각  : 2026-09-02 20:50:21
+학습 종료 시각  : 2026-09-02 21:30:46
+학습 시간(분)   : 40.42
+
+학습 결과 경로  : C:\Users\PMS\Desktop\MS\project\small-drone-detection\models\baseline_subset_yolo26s_640_ep30_260902_2050
+최종 모델 경로  : C:\Users\PMS\Desktop\MS\project\small-drone-detection\models\baseline_subset_yolo26s_640_ep30_260902_2050\weights\best.pt

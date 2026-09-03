@@ -10,8 +10,10 @@ models/*
 # Keep final model folders only
 !models/baseline/
 !models/baseline/**
-!models/improved/
-!models/improved/**
+!models/improved_v1/
+!models/improved_v1/**
+!models/improved_v2/
+!models/improved_v2/**
 
 # Python
 __pycache__/
