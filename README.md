@@ -42,7 +42,6 @@ Validation 결과를 기준으로 **Improved V2를 최종 모델로 고정**했�
 
 `analysis/06_final_test.ipynb`에서 세 모델에 동일하게 `conf=0.25`를 적용한 비교 결과입니다.
 
-
 ---
 
 ## 2. Dataset
@@ -125,8 +124,6 @@ small-drone-detection/
 | Batch Size | 16 |
 | Seed | 42 |
 | Workers | 4 |
-| Deterministic | True |
-| AMP | False |
 | Device | CUDA GPU (`device=0`) |
 
 ```bash
@@ -208,13 +205,11 @@ python src/03_train.py
 공통 학습 조건:
 
 ```text
-Model         : yolo26s.pt
-Dataset       : yolo_subset
-Batch         : 16
-Seed          : 42
-Workers       : 4
-Deterministic : True
-AMP           : False
+Model   : yolo26s.pt
+Dataset : yolo_subset
+Batch   : 16
+Seed    : 42
+Workers : 4
 ```
 
 학습 결과는 실행 조건과 timestamp가 포함된 폴더에 저장됩니다.
