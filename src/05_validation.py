@@ -7,7 +7,7 @@ from ultralytics import YOLO
 
 ROOT = Path(__file__).resolve().parents[1]
 
-RUN_NAME = "baseline" # baseline, improved_v1, improved_v2
+RUN_NAME = "improved_v2" # baseline, improved_v1, improved_v2
 
 MODEL_DIR = ROOT / "models" / RUN_NAME
 MODEL_PATH = MODEL_DIR / "weights" / "best.pt"
@@ -15,7 +15,7 @@ DATA_YAML = ROOT / "data" / "yolo_subset" / "data.yaml"
 
 # baseline IMG_SIZE = 640
 # improved_v1, improved_v2 IMG_SIZE = 960
-IMG_SIZE = 640
+IMG_SIZE = 960
 BATCH_SIZE = 16
 DEVICE = 0
 SEED = 42
