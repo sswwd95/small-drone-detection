@@ -55,7 +55,7 @@ small-drone-detection/
 │   ├── yolo_subset/
 │   └── external/
 ├── models/
-├── notebooks/
+├── analysis/
 ├── requirements.txt
 └── README.md
 ```
