@@ -9,7 +9,7 @@ from ultralytics import YOLO
 
 ROOT = Path(__file__).resolve().parents[1]
 
-VERSION = "v1" #baseline, v1,
+VERSION = "v2" #baseline, v1, v2
 PRETRAINED_MODEL = "yolo26s.pt"
 PRETRAINED_DIR = ROOT / "pretrained"
 PRETRAINED_PATH = PRETRAINED_DIR / PRETRAINED_MODEL
