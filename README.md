@@ -2,7 +2,7 @@
 
 DUT Anti-UAV 공개 데이터셋을 이용해 **소형 UAV 탐지 실패 원인을 분석하고, 분석 결과에 근거해 모델을 단계적으로 개선한 프로젝트**입니다.
 
-> **데이터 분석 → 서브셋 검증 → Baseline 실패 분석 → Input Size 증가(V1) → Epoch 증가(V2) → Validation에서 모델 고정 → Test 최종 확인**
+> **데이터 분석 → 서브셋 검증 → Baseline 실패 분석 → Input Size 증가(V1) → Epoch 증가(V2) → Validation에서 최종 모델 고정 → Test 최종 확인**
 
 ---
 
@@ -42,6 +42,8 @@ Validation 결과를 기준으로 **Improved V2를 최종 모델로 고정**했�
 
 `analysis/06_final_test.ipynb`에서 세 모델에 동일하게 `conf=0.25`를 적용한 비교 결과입니다.
 
+Test Set은 모델 개선 과정에 사용하지 않고, **Validation을 기준으로 Improved V2를 선택한 이후 최종 성능 확인에만 사용**했습니다.
+
 ---
 
 ## 2. Dataset
@@ -59,7 +61,9 @@ Validation 결과를 기준으로 **Improved V2를 최종 모델로 고정**했�
 | Validation | 2,600 | 2,621 | 88.55% |
 | Test | 2,200 | 2,245 | 75.86% |
 
-대부분의 UAV가 작은 객체이므로, 48시간 내 반복 실험이 가능하도록 공식 Split을 유지한 채 각 Split의 약 1/3을 사용했습니다.
+Train과 Validation의 약 88%가 이미지 면적 1% 미만의 UAV를 포함하고 있어 **극소형 객체 탐지가 핵심 난점**임을 확인했습니다.
+
+48시간 내 반복 실험이 가능하도록 공식 Train / Validation / Test Split을 유지한 채 각 Split의 약 1/3을 사용했습니다.
 
 ### Subset
 
@@ -77,6 +81,8 @@ Validation 결과를 기준으로 **Improved V2를 최종 모델로 고정**했�
 - Validation / Test의 희소 사례 비율 유지
 - `Seed=42` 고정
 - 원본과 서브셋의 bbox 분포 비교 후 대표성 확인
+
+서브셋 구성 및 대표성 검증 과정은 `analysis/02_subset_analysis.ipynb`에서 확인할 수 있습니다.
 
 ---
 
@@ -126,6 +132,23 @@ small-drone-detection/
 | Workers | 4 |
 | Device | CUDA GPU (`device=0`) |
 
+주요 Python 패키지는 `requirements.txt`에 기록했습니다.
+
+GPU, CUDA, PyTorch 및 OS 차이에 따라 추론 시간과 소수점 수준의 metric 차이가 발생할 수 있습니다.
+
+---
+
+## 5. Reproduction
+
+### 1) Repository Clone
+
+```bash
+git clone https://github.com/sswwd95/small-drone-detection.git
+cd small-drone-detection
+```
+
+### 2) Environment Setup
+
 ```bash
 conda create -n small-drone python=3.11.16 -y
 conda activate small-drone
@@ -138,13 +161,7 @@ pip install -r requirements.txt
 python -c "import torch, ultralytics; print(torch.__version__); print(ultralytics.__version__); print(torch.cuda.is_available())"
 ```
 
----
-
-## 5. Reproduction
-
-모든 명령어는 프로젝트 루트에서 실행합니다.
-
-### 1) Dataset Download
+### 3) Dataset Download
 
 ```bash
 python src/01_download_dataset.py
@@ -152,7 +169,7 @@ python src/01_download_dataset.py
 
 DUT Anti-UAV 공식 Train / Validation / Test 데이터를 `data/raw/`에 다운로드합니다.
 
-### 2) Pascal VOC → YOLO
+### 4) Pascal VOC → YOLO
 
 ```bash
 python src/02_make_dataset.py
@@ -167,7 +184,7 @@ data/yolo/
 └── data.yaml
 ```
 
-### 3) Subset 생성
+### 5) Subset 생성
 
 `03_train.py`보다 먼저 실행합니다.
 
@@ -184,19 +201,19 @@ data/yolo_subset/
 └── data.yaml
 ```
 
-동일한 `Seed=42`와 선정 규칙을 사용하므로 동일 서브셋 재생성이 가능합니다.
+동일한 `Seed=42`와 선정 규칙을 사용하므로 동일한 서브셋 재생성이 가능합니다.
 
-### 4) Train
+### 6) Train
 
-세 모델 모두 `src/03_train.py` 사용:
+세 모델 모두 `src/03_train.py`를 사용합니다.
 
 | Version | `VERSION` | `IMG_SIZE` | `EPOCHS` |
 |---|---|---:|---:|
 | Baseline | `"baseline"` | 640 | 30 |
-| V1 | `"v1"` | 960 | 30 |
-| V2 | `"v2"` | 960 | 100 |
+| Improved V1 | `"v1"` | 960 | 30 |
+| Improved V2 | `"v2"` | 960 | 100 |
 
-설정을 변경한 뒤 각각 실행:
+설정을 변경한 뒤 각각 실행합니다.
 
 ```bash
 python src/03_train.py
@@ -210,6 +227,7 @@ Dataset : yolo_subset
 Batch   : 16
 Seed    : 42
 Workers : 4
+Device  : 0
 ```
 
 학습 결과는 실행 조건과 timestamp가 포함된 폴더에 저장됩니다.
@@ -236,7 +254,9 @@ models/improved_v1/weights/best.pt
 models/improved_v2/weights/best.pt
 ```
 
-### 5) Validation
+각 실험에서는 `best.pt`를 기준으로 이후 평가를 진행합니다.
+
+### 7) Validation
 
 `src/05_validation.py`의 `RUN_NAME`, `IMG_SIZE`를 모델별로 변경합니다.
 
@@ -246,7 +266,7 @@ improved_v1 : RUN_NAME="improved_v1", IMG_SIZE=960
 improved_v2 : RUN_NAME="improved_v2", IMG_SIZE=960
 ```
 
-각 모델마다 실행:
+각 모델마다 실행합니다.
 
 ```bash
 python src/05_validation.py
@@ -258,7 +278,9 @@ python src/05_validation.py
 models/<model_name>/val_<timestamp>/val_metrics.csv
 ```
 
-### 6) Failure Analysis
+Validation 결과를 기준으로 모델 개선 여부를 판단합니다.
+
+### 8) Failure Analysis
 
 ```bash
 jupyter lab
@@ -288,13 +310,17 @@ Near IoU             = 0.1
 | 위치 부정확 | GT와 가장 높은 IoU가 0.1 이상 0.5 미만 |
 | 미검출 | 모든 예측과 IoU < 0.1 |
 
-### 7) Final Test
+각 단계에서는 단순 metric 비교에 그치지 않고 FN·FP 사례와 객체 크기별 성능을 함께 확인해 다음 개선 조건을 결정했습니다.
 
-모든 개선 의사결정이 끝난 뒤 실행:
+### 9) Final Test
+
+모든 개선 의사결정이 끝나고 최종 모델을 고정한 뒤 실행합니다.
 
 ```text
 analysis/06_final_test.ipynb
 ```
+
+비교 모델:
 
 ```python
 MODELS = {
@@ -304,7 +330,9 @@ MODELS = {
 }
 ```
 
-Test Set은 최종 확인용으로만 사용합니다.
+세 모델에 동일하게 `conf=0.25`를 적용합니다.
+
+Test Set은 모델 선택이나 하이퍼파라미터 조정에 사용하지 않고 **최종 일반화 성능 확인에만 사용**합니다.
 
 ---
 
@@ -312,64 +340,107 @@ Test Set은 최종 확인용으로만 사용합니다.
 
 ### Baseline
 
+Validation 결과:
+
+- Precision: 0.9416
 - Recall: 0.8462
 - Q1 Recall: 0.7489
 - FN: 123
 - FP: 99
+- mAP50: 0.8937
 - mAP75: 0.6230
 
-가장 작은 객체군의 낮은 Recall을 핵심 문제로 확인했습니다.
+Precision에 비해 Recall이 낮고, 가장 작은 객체군인 Q1 Recall이 **0.7489**까지 감소했습니다.
+
+FN 123건을 세부 분석한 결과 실제 객체 자체를 찾지 못하거나 작은 UAV의 위치를 정확하게 맞추지 못하는 사례가 확인됐습니다.
+
+따라서 첫 번째 개선에서는 **입력 해상도를 높여 작은 UAV의 특징 손실을 줄이는 방향**을 선택했습니다.
 
 ### V1 — Input Size 640 → 960
+
+다른 주요 학습 조건을 유지하고 Input Size만 증가했습니다.
 
 - Q1 Recall: **0.7489 → 0.8265**
 - Recall: **0.8462 → 0.8847**
 - FN: **123 → 80**
 - FP: **99 → 75**
 - mAP75: **0.6230 → 0.7225**
+- mAP50-95: **0.5561 → 0.6202**
 
-Input Size 증가가 극소형 UAV 검출에 효과가 있음을 확인했습니다.
+Q1 Recall과 mAP75가 함께 상승해 Input Size 증가가 **극소형 UAV 검출 및 bbox 위치 정확도 개선에 효과적**임을 확인했습니다.
+
+V1의 `best.pt`가 30 Epoch 시점에서 생성됐고 학습 곡선에서도 추가 학습 가능성이 확인되어, 다음 단계에서는 Input Size를 유지한 채 Epoch만 증가시켰습니다.
 
 ### V2 — Epoch 30 → 100
 
+Input Size 960을 유지하고 Epoch를 30에서 100으로 증가했습니다.
+
 - Recall: **0.8847 → 0.9032**
+- Q1 Recall: **0.8265 → 0.8311**
 - mAP75: **0.7225 → 0.7703**
 - mAP50-95: **0.6202 → 0.6500**
 - FN: **80 → 76**
 - FP: **75 → 51**
 
-전체 성능은 추가 개선됐지만 극소형·저화질 UAV 미검출과 배경 오탐은 일부 남았습니다.
+V1 대비 mAP50은 큰 변화가 없었지만 Recall, mAP75, mAP50-95가 추가 상승했고 FP도 감소했습니다.
 
-따라서 추가 Epoch보다 **실제 오탐 배경과 어려운 UAV 사례를 학습 데이터에 추가하는 방향**을 다음 개선안으로 판단했습니다.
+따라서 Validation 결과를 기준으로 **Improved V2를 최종 모델로 고정**했습니다.
+
+다만 Q1 Recall 개선 폭은 V1 단계보다 작아졌고, 극소형·저화질 UAV 미검출과 특정 배경 오탐이 여전히 남았습니다.
+
+따라서 다음 개선 방향은 단순 Epoch 증가보다 **실제 오탐 배경과 어려운 UAV 사례를 학습 데이터에 추가하는 Hard Example 중심의 데이터 개선**이 더 적절하다고 판단했습니다.
 
 ---
 
-## 7. Limitations
+## 7. Failure Analysis Summary
+
+Baseline 분석에서 확인한 주요 문제:
+
+| 확인 결과 | 판단 |
+|---|---|
+| Precision 0.9416, Recall 0.8462 | 오탐보다 미탐 개선 우선 |
+| mAP50 0.8937, mAP75 0.6230 | 높은 IoU 조건의 bbox 정밀도 개선 필요 |
+| FN 123개, FP 99개 | 실제 오류 감소 필요 |
+| 미검출 FN 55개 | 객체 자체를 찾지 못하는 사례 우선 개선 필요 |
+| Q1 Recall 0.7489, Q4 Recall 0.9315 | 극소형 UAV에서 뚜렷한 성능 저하 |
+| 위치 부정확 FN 24개 | 작은 객체의 bbox 좌표 오차 개선 필요 |
+
+이 분석을 근거로 첫 번째 개선 조건을 Input Size 증가로 결정했습니다.
+
+---
+
+## 8. Limitations
 
 - 사람도 구별하기 어려운 극소형·저화질 UAV 미검출
 - 조류·비행기·건물 구조물·바위·그림자 등 배경 객체 오탐
 - 복잡한 수목 배경에서 실제 UAV 미검출
+- 작은 객체에서 bbox 위치 오차 발생
 - 일부 위치 오차에서 타이트한 GT annotation 영향 가능성
-- 다른 촬영 환경에 대한 추가 일반화 검증 필요
+- 단일 공개 데이터셋 기반 실험으로 다른 촬영 환경에 대한 일반화 검증 부족
+
+특히 단순 추가 학습보다 **Hard Negative와 어려운 UAV 사례를 추가한 데이터 중심 개선**이 다음 단계에서 필요합니다.
 
 ---
 
-## 8. Notebook Guide
+## 9. Notebook Guide
 
 | Notebook | 역할 |
 |---|---|
-| `01_dataset_analysis.ipynb` | 전체 데이터 특성 분석 |
-| `02_subset_analysis.ipynb` | 서브셋 대표성 검증 |
-| `03_baseline_failure_analysis.ipynb` | Baseline 실패 분석 및 V1 근거 |
-| `04_v1_failure_analysis.ipynb` | V1 효과 검증 및 V2 근거 |
-| `05_v2_failure_analysis.ipynb` | V2 효과 및 학습 종료 판단 |
-| `06_final_test.ipynb` | 최종 Test 확인 |
+| `01_dataset_analysis.ipynb` | 전체 데이터 구조 및 객체 크기 특성 분석 |
+| `02_subset_analysis.ipynb` | 원본과 서브셋의 분포 비교 및 대표성 검증 |
+| `03_baseline_failure_analysis.ipynb` | Baseline 실패 분석 및 V1 개선 근거 도출 |
+| `04_v1_failure_analysis.ipynb` | V1 개선 효과 검증 및 V2 개선 근거 도출 |
+| `05_v2_failure_analysis.ipynb` | V2 개선 효과 분석 및 학습 종료 판단 |
+| `06_final_test.ipynb` | 고정된 세 모델의 최종 Test 성능 비교 |
 
 ---
 
-## 9. Quick Reproduction
+## 10. Quick Reproduction
 
 ```bash
+git clone https://github.com/sswwd95/small-drone-detection.git
+cd small-drone-detection
+
 conda create -n small-drone python=3.11.16 -y
 conda activate small-drone
 pip install -r requirements.txt
@@ -397,8 +468,6 @@ Notebook 실행 순서:
 05_v2_failure_analysis.ipynb
 06_final_test.ipynb
 ```
-
-GPU, CUDA, PyTorch, OS 차이에 따라 추론 시간과 소수점 수준의 metric 차이가 발생할 수 있습니다.
 
 ---
 
