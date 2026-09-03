@@ -94,7 +94,7 @@ kaggle
 git clone https://github.com/sswwd95/small-drone-detection.git
 cd small-drone-detection
 
-conda create -n ardet python=3.10 -y
+conda create -n ardet python=3.11.16 -y
 conda activate ardet
 
 pip install -r requirements.txt
