@@ -15,6 +15,9 @@ models/*
 !models/improved_v2/
 !models/improved_v2/**
 
+# Analysis outputs
+models/**/analysis/
+
 # Unnecessary weights
 models/**/weights/last.pt
 
