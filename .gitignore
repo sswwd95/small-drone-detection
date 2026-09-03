@@ -4,7 +4,7 @@ data/
 # Pretrained weights
 pretrained/
 
-# Ignore all model outputs
+# Ignore all model runs
 models/*
 
 # Keep final model folders only
@@ -14,6 +14,26 @@ models/*
 !models/improved_v1/**
 !models/improved_v2/
 !models/improved_v2/**
+
+# Unnecessary weights
+models/**/weights/last.pt
+
+# Training / validation sample images
+models/**/train_batch*.jpg
+models/**/val_batch*.jpg
+
+# Duplicate evaluation plots
+models/**/BoxF1_curve.png
+models/**/BoxP_curve.png
+models/**/BoxR_curve.png
+models/**/BoxPR_curve.png
+models/**/confusion_matrix_normalized.png
+
+# Generated external test videos
+models/**/external_test/*_result.mp4
+
+# Jupyter
+.ipynb_checkpoints/
 
 # Python
 __pycache__/
