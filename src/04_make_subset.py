@@ -131,7 +131,7 @@ def main():
     if not SOURCE_ROOT.exists():
         raise FileNotFoundError(
             "YOLO 데이터 없음\n"
-            "먼저 python src/02_prepare_dataset.py 실행 필요"
+            "먼저 python src/02_make_dataset.py 실행 필요"
         )
 
     # 기존 subset 제거
