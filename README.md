@@ -131,7 +131,7 @@ small-drone-detection/
 | Seed | 42 |
 | Workers | 4 |
 
-다른 CUDA GPU에서도 실행할 수 있으나, 하드웨어와 CUDA 환경 차이로 추론 시간 및 소수점 수준의 metric 차이가 발생할 수 있습니다. `batch=16`에서 CUDA OOM이 발생하면 `src/03_train.py`, `src/05_validation.py`, `src/06_test.py`의 `BATCH_SIZE`를 줄여야 합니다.
+다른 CUDA GPU에서도 실행할 수 있으나, 하드웨어와 CUDA 환경 차이로 추론 시간 및 소수점 수준의 metric 차이가 발생할 수 있습니다. GPU 메모리가 부족해 CUDA OOM이 발생하는 경우 BATCH_SIZE 또는 IMG_SIZE를 실행 환경에 맞게 조정해야 합니다.
 
 ## 6. Reproduction
 
