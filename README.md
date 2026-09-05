@@ -293,7 +293,7 @@ python src/04_make_subset.py
 
 이후 목적에 따라 다음 중 하나를 수행합니다.
 
-- 포함된 가중치 평가: `src/05_validation.py` 또는 `src/06_test.py`의 모델 설정 후 실행
+- 평가: `src/05_validation.py` 또는 `src/06_test.py`의 모델 설정 후 실행
 - 전체 재학습: `src/03_train.py`의 `VERSION`을 `baseline`, `v1`, `v2`로 변경하며 총 3회 실행
 - 실패 분석: `pip install jupyterlab` 후 `jupyter lab` 실행
 
