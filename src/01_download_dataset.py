@@ -18,7 +18,7 @@ DATASETS = {
     "test": "1L1zeW1EMDLlXHClSDcCjl3rs_A6sVai0",
 }
 
-
+# gdown이 없으면 현재 Python 환경에 설치
 def ensure_gdown():
     """gdown 설치 확인."""
     if importlib.util.find_spec("gdown") is None:

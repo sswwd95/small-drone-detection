@@ -106,10 +106,10 @@ def main():
         batch=BATCH_SIZE,
         device=DEVICE,
         seed=SEED,
-        deterministic=True,
+        deterministic=True, # 재현성 보장(기본값 True)
         workers=WORKERS,
         plots=True,
-        amp=False,
+        amp=False, # FP32로 학습하여 실험 간 정밀도 조건 통일(기본값 True)
         project=str(MODEL_ROOT),
         name=model_name,
         exist_ok=True,
